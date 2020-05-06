@@ -1,0 +1,151 @@
+<div class="header">
+<h1 class="mat-h1">Issues</h1>
+<p>Select searched issues and export them to PDF</p>
+<button mat-raised-button *ngIf="selection.selected.length > 0" (click)="export()" color="primary" class="button-export">
+  {{text}}
+</button>
+</div>
+<div class="issues-nav">
+<!-- <mat-form-field>
+  <mat-label>Repositories</mat-label>
+  <mat-select [formControl]="selectedrepositories" multiple>
+    <mat-option *ngFor="let repo of repositories" [value]="repo.id">{{repo.name}}</mat-option>
+  </mat-select>
+</mat-form-field> -->
+
+<mat-form-field class="form-field">
+    <mat-label>Labels</mat-label>
+    <mat-select [formControl]="selectedlabels" multiple>
+      <mat-option *ngFor="let label of labels" [value]="label.name">{{label.name}}</mat-option>
+    </mat-select>
+</mat-form-field>
+
+
+<mat-form-field>
+    <mat-label>Author</mat-label>
+    <mat-select [formControl]="selectedauthors">
+      <mat-form-field class="filter-in-select">
+        <mat-label>Filter</mat-label>
+        <input matInput placeholder="Filter" [(ngModel)]='queryauthor'>
+      </mat-form-field>
+      <mat-option [value]="'*'">Any</mat-option>
+      <mat-option *ngFor="let collaborator of collaborators | search:'login':queryauthor" [value]="collaborator.login">{{collaborator.login}}</mat-option>
+      <mat-option [value]="'none'">None</mat-option>
+    </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Assignee</mat-label>
+  <mat-select [formControl]="selectedassignee">
+    <mat-form-field class="filter-in-select">
+      <mat-label>Filter</mat-label>
+      <input matInput placeholder="Filter" [(ngModel)]='queryassignee'>
+    </mat-form-field>
+    <mat-option [value]="'*'">Any</mat-option>
+    <mat-option *ngFor="let collaborator of collaborators | search:'login':queryassignee" [value]="collaborator.login">{{collaborator.login}}</mat-option>
+    <mat-option [value]="'none'">None</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Mentioned</mat-label>
+  <mat-select [formControl]="selectedmentioned">
+    <mat-form-field class="filter-in-select">
+      <mat-label>Filter</mat-label>
+      <input matInput placeholder="Filter" [(ngModel)]='querymentioned'>
+    </mat-form-field>
+    <mat-option [value]="'*'">Any</mat-option>
+    <mat-option *ngFor="let collaborator of collaborators | search:'login':querymentioned" [value]="collaborator.login">{{collaborator.login}}</mat-option>
+    <mat-option [value]="'none'">None</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>Milesone</mat-label>
+  <mat-select [formControl]="selectedmilestone">
+    <mat-option [value]="'*'">Any</mat-option>
+    <mat-option *ngFor="let milestone of milestones" [value]="milestone.number">{{milestone.title}}</mat-option>
+    <mat-option [value]="'none'">None</mat-option>
+  </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <mat-label>State</mat-label>
+  <mat-select [formControl]="selectedstate">
+    <mat-option [value]="'all'">all</mat-option>
+    <mat-option [value]="'open'">open</mat-option>
+    <mat-option [value]="'closed'">closed</mat-option>
+  </mat-select>
+</mat-form-field>
+
+
+<mat-form-field>
+  <mat-label>Since date</mat-label>
+  <input matInput [matDatepicker]="picker" [formControl]="selectedsince">
+  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+  <mat-datepicker #picker></mat-datepicker>
+</mat-form-field>
+
+
+
+  <button mat-raised-button (click)="search()" color="primary" class="button-login">
+      <mat-icon>search</mat-icon>
+      Search
+  </button>
+
+  
+
+</div>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8" style="width: 100%;">
+
+    <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()"
+                        [aria-label]="checkboxLabel()">
+            </mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)"
+                        [aria-label]="checkboxLabel(row)">
+            </mat-checkbox>
+        </td>
+    </ng-container>
+    
+    <!-- Position Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef> No </th>
+      <td mat-cell *matCellDef="let element"> {{element.number}} </td>
+    </ng-container>
+  
+    <!-- Name Column -->
+    <ng-container matColumnDef="title">
+      <th mat-header-cell *matHeaderCellDef> Title </th>
+      <td mat-cell *matCellDef="let element"> {{element.title}} </td>
+    </ng-container>
+  
+    <!-- Weight Column -->
+    <ng-container matColumnDef="state">
+      <th mat-header-cell *matHeaderCellDef> State </th>
+      <td mat-cell *matCellDef="let element"> {{element.state}} </td>
+    </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="['select', 'id', 'title', 'state']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['select', 'id', 'title', 'state'];"></tr>
+  </table>
+  <div *ngIf="loading">
+    <div class="material_block">
+      <svg class="spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg"><circle class="circle" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle></svg>
+    </div>
+  </div>
+  <mat-paginator [length]="1000"
+              [pageSize]="pageSize"
+              [pageIndex]="pageIndex"
+              [pageSizeOptions]="[10, 25, 100]" (page)="pageEvent = handlePage($event)">
+  </mat-paginator>
+  
+  

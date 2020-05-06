@@ -1,0 +1,17 @@
+<h1 class="mat-h1">Repositories</h1>
+
+<div>
+    <mat-grid-list cols="2" rowHeight="120px" gutterSize="20">
+        <mat-grid-tile [colspan] = "1"  *ngFor="let repo of repositories" [routerLink]="['/repositories', repo.id]">
+            <mat-card class="repo-card">
+                <mat-card-title class="login-header">{{repo.name}} </mat-card-title>
+                <mat-card-content>
+                    
+                <p>
+                    Updated on {{repo.updated | date}}
+                </p>
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>

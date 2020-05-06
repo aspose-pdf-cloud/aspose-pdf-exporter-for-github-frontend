@@ -1,0 +1,9 @@
+<h1 mat-dialog-title>Error. {{data.error}}</h1>
+<div mat-dialog-content>
+  <p>{{data.error_description}}</p>
+  <p> You could download information about the error. </p>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button (click)="download()">Download</button>
+</div>
