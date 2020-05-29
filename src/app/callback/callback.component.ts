@@ -26,7 +26,6 @@ export class CallbackComponent implements OnInit {
                 if (auth_code !== null) {
                   this.http.get(`${this.apiUrl}/token?code=${auth_code}&redirect_uri=${callbackURL}&state=${params.get('state')}`
                     ).subscribe((info: any) => {
-                            console.log('info', info);
                             let access_token = info.access_token;
                             if (access_token !== null) {
                                 sessionStorage.setItem('access_token', access_token);

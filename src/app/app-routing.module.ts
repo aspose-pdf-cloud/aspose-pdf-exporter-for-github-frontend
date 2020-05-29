@@ -5,6 +5,7 @@ import { RepositoriesComponent } from './repositories/repositories.component';
 import { MainComponent } from './main/main.component';
 import { CallbackComponent } from './callback/callback.component';
 import { IssuesComponent } from './issues/issues.component';
+import { AuthGuard } from './guard/auth.guard';
 
 const routes: Routes = [
   {
@@ -18,6 +19,7 @@ const routes: Routes = [
   {
     path: 'repositories',
     component: MainComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: '',

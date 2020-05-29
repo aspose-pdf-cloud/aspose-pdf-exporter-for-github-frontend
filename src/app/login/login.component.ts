@@ -24,6 +24,9 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
+    if(document.referrer === 'https://github.com/') {
+      this.auth.performLogin()
+    }
   }
 
 }
