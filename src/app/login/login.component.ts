@@ -9,7 +9,7 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-
+  open = false;
   constructor(private matIconRegistry: MatIconRegistry,
               private domSanitizer: DomSanitizer,
               private auth: AuthService){
@@ -26,6 +26,8 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     if(document.referrer === 'https://github.com/') {
       this.auth.performLogin()
+    } else {
+      this.open = true;
     }
   }
 
